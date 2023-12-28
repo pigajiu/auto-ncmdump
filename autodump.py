@@ -1,5 +1,5 @@
 from ncmdump import dump
-import os,fnmatch
+import os,fnmatch,time
 
 print("软件仅供学习交流，请勿用于商业及非法用途，如产生法律纠纷与本人无关。")
 print("------")
@@ -26,11 +26,23 @@ def all_files(root, patterns='*', single_level=False, yield_folder=False):
                     break
         if single_level:
             break
-while 1:
+
+def is_file_downloaded(file_path):
+    print(f'发现新下载文件 {file_path}')
+    prev_size = 0
+    while True:
+        current_size = os.path.getsize(file_path)
+        if current_size > prev_size:
+            prev_size = current_size
+            time.sleep(1)
+        else:
+            return True
+
+while True:
     thefile=list(all_files(download_folder, '*.ncm'))
     for item in thefile:
         if(waiting == True):
             waiting = False
-            os.system('cls')
-        print (dump(item),"转换成功！")
-        delete = os.remove(item)
+        if(is_file_downloaded(item)):
+            print (dump(item),"转换成功！")
+            delete = os.remove(item)
